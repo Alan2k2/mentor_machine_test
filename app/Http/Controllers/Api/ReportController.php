@@ -17,11 +17,13 @@ class ReportController extends Controller
      */
     public function supplierSpend()
     {
-        $spend = \App\Models\PurchaseOrder::where('status', 'RECEIVED')
-            ->join('suppliers', 'purchase_orders.supplier_id', '=', 'suppliers.id')
-            ->select('suppliers.id', 'suppliers.name', \Illuminate\Support\Facades\DB::raw('SUM(purchase_orders.total_amount) as total_spend'))
-            ->groupBy('suppliers.id', 'suppliers.name')
-            ->get();
+        $spend = \Illuminate\Support\Facades\Cache::remember('api_report_supplier_spend', 300, function () {
+            return \App\Models\PurchaseOrder::where('status', 'RECEIVED')
+                ->join('suppliers', 'purchase_orders.supplier_id', '=', 'suppliers.id')
+                ->select('suppliers.id', 'suppliers.name', \Illuminate\Support\Facades\DB::raw('SUM(purchase_orders.total_amount) as total_spend'))
+                ->groupBy('suppliers.id', 'suppliers.name')
+                ->get();
+        });
 
         return response()->json($spend);
     }
