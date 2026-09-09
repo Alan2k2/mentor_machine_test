@@ -7,6 +7,14 @@ use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
+    /**
+     * Render the main dashboard view.
+     * 
+     * Calculates high-level metrics (total products, low stock alerts, total expenditure)
+     * using optimized DB aggregates and retrieves the 5 most recent Purchase Orders.
+     * 
+     * @return \Illuminate\View\View
+     */
     public function index()
     {
         $totalProducts = \App\Models\Product::count();

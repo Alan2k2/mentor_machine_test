@@ -7,6 +7,12 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(Tests\TestCase::class, RefreshDatabase::class);
 
+/**
+ * Test the core Purchase Order calculation logic.
+ * 
+ * Verifies that the CreatePurchaseOrderAction class correctly calculates individual item subtotals 
+ * and accurately sums them up to determine the correct grand total for the entire Purchase Order.
+ */
 test('calculates correct order total and item subtotals', function () {
     $supplier = Supplier::create(['name' => 'Supplier A', 'email' => 'a@a.com']);
     $product1 = Product::create(['sku' => 'P1', 'name' => 'Product 1', 'unit_price' => 10.00, 'stock_quantity' => 100]);

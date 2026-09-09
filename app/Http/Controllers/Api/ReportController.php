@@ -7,6 +7,14 @@ use Illuminate\Http\Request;
 
 class ReportController extends Controller
 {
+    /**
+     * Generate a report calculating the total spend across all RECEIVED purchase orders, grouped by supplier.
+     * 
+     * Uses optimized DB aggregate functions (SUM) and GROUP BY to calculate 
+     * the totals efficiently on the database side without hydrating large collections.
+     * 
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function supplierSpend()
     {
         $spend = \App\Models\PurchaseOrder::where('status', 'RECEIVED')

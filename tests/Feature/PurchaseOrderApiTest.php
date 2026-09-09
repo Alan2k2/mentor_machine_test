@@ -12,6 +12,13 @@ test('unauthorized requests return 401', function () {
     $response->assertStatus(401);
 });
 
+/**
+ * Test the API endpoint for creating a new Purchase Order.
+ * 
+ * Verifies that when a valid payload is submitted, the API returns a 201 Created status,
+ * the Purchase Order is saved in the database with the correct total amount,
+ * and the individual line items are correctly attached.
+ */
 test('can create purchase order via api', function () {
     $user = User::factory()->create();
     $supplier = Supplier::create(['name' => 'Supplier A', 'email' => 'a@a.com']);

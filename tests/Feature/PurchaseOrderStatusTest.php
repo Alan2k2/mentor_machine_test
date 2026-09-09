@@ -9,7 +9,13 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(Tests\TestCase::class, RefreshDatabase::class);
 
-test('transition to received increments stock', function () {
+/**
+ * Test the status transition of a Purchase Order to 'RECEIVED'.
+ * 
+ * Verifies that when an order is marked as RECEIVED, the system correctly updates the status
+ * and uses pessimistic locking to safely increment the corresponding product inventory levels.
+ */
+test('status update to received updates inventory', function () {
     $supplier = Supplier::create(['name' => 'Supplier A', 'email' => 'a@a.com']);
     $product = Product::create(['sku' => 'P1', 'name' => 'Product 1', 'unit_price' => 10.00, 'stock_quantity' => 50]);
     

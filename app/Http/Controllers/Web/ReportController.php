@@ -7,6 +7,14 @@ use Illuminate\Http\Request;
 
 class ReportController extends Controller
 {
+    /**
+     * Render the Supplier Spend Report view.
+     * 
+     * Uses optimized DB aggregations (SUM) and GROUP BY to fetch the total amount spent 
+     * per supplier for all RECEIVED purchase orders.
+     * 
+     * @return \Illuminate\View\View
+     */
     public function index()
     {
         $supplierSpend = \App\Models\PurchaseOrder::where('status', 'RECEIVED')

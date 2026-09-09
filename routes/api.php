@@ -7,18 +7,34 @@ use App\Http\Controllers\Api\InventoryController;
 use App\Http\Controllers\Api\PurchaseOrderController;
 use App\Http\Controllers\Api\ReportController;
 
+/*
+|--------------------------------------------------------------------------
+| API Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register API routes for your application. These
+| routes are loaded by the RouteServiceProvider within a group which
+| is assigned the "api" middleware group.
+|
+*/
+
+// Authentication Endpoint: Issues Sanctum tokens for API access
 Route::post('/login', [AuthController::class, 'login']);
 
 Route::middleware('auth:sanctum')->group(function () {
+    // Return currently authenticated user
     Route::get('/user', function (Request $request) {
         return $request->user();
     });
 
-    Route::get('/inventory/low-stock', [InventoryController::class, 'lowStock']);
-    Route::get('/inventory', [InventoryController::class, 'index']);
+    // Inventory Endpoints
+    Route::get('/inventory/low-stock', [InventoryController::class, 'lowStock']); // Get items below threshold
+    Route::get('/inventory', [InventoryController::class, 'index']); // List all inventory items
     
-    Route::post('/purchase-orders', [PurchaseOrderController::class, 'store']);
-    Route::patch('/purchase-orders/{id}/status', [PurchaseOrderController::class, 'updateStatus']);
+    // Purchase Order Endpoints
+    Route::post('/purchase-orders', [PurchaseOrderController::class, 'store']); // Create new PO
+    Route::patch('/purchase-orders/{id}/status', [PurchaseOrderController::class, 'updateStatus']); // Update PO status
     
-    Route::get('/reports/supplier-spend', [ReportController::class, 'supplierSpend']);
+    // Reporting Endpoints
+    Route::get('/reports/supplier-spend', [ReportController::class, 'supplierSpend']); // Calculate total spend per supplier
 });
