@@ -18,7 +18,8 @@ class ReportController extends Controller
     public function index()
     {
         $supplierSpend = \Illuminate\Support\Facades\Cache::remember('report_supplier_spend', 300, function () {
-            return \App\Models\PurchaseOrder::where('status', 'RECEIVED')
+            return \Illuminate\Support\Facades\DB::table('purchase_orders')
+                ->where('status', 'RECEIVED')
                 ->join('suppliers', 'purchase_orders.supplier_id', '=', 'suppliers.id')
                 ->select('suppliers.id', 'suppliers.name', \Illuminate\Support\Facades\DB::raw('SUM(purchase_orders.total_amount) as total_spend'))
                 ->groupBy('suppliers.id', 'suppliers.name')

@@ -17,15 +17,24 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        $data = \Illuminate\Support\Facades\Cache::remember('dashboard_metrics', 300, function () {
+        $metrics = \Illuminate\Support\Facades\Cache::remember('dashboard_metrics', 300, function () {
             return [
                 'totalProducts' => \App\Models\Product::count(),
                 'lowStockCount' => \App\Models\Product::whereColumn('stock_quantity', '<', 'low_stock_threshold')->count(),
                 'totalExpenditure' => \App\Models\PurchaseOrder::where('status', 'RECEIVED')->sum('total_amount'),
-                'latestOrders' => \App\Models\PurchaseOrder::with('supplier')->latest()->take(5)->get(),
             ];
         });
 
-        return view('dashboard', $data);
+        // Eloquent objects should generally not be cached directly in Redis to avoid 
+        // __PHP_Incomplete_Class serialization errors when dependencies change.
+        // A LIMIT 5 query is extremely fast and doesn't need to be cached.
+        $latestOrders = \App\Models\PurchaseOrder::with('supplier')->latest()->take(5)->get();
+
+        return view('dashboard', [
+            'totalProducts' => $metrics['totalProducts'],
+            'lowStockCount' => $metrics['lowStockCount'],
+            'totalExpenditure' => $metrics['totalExpenditure'],
+            'latestOrders' => $latestOrders
+        ]);
     }
 }
